@@ -4,10 +4,12 @@ import { useEffect, useState } from "react"
 
 function Hobbies() {
     const [hobbies, setHobbies] = useState([])
+    const [newHobby, setNewHobby] = useState("")
 
     // const modal 
     const [showModal, setShowModal] = useState(false)
     const [hobbyId, setHobbyId] = useState(null)
+    const [showModalAdd, setShowModalAdd] = useState(false)
 
 
     const fetchData = () => {
@@ -24,6 +26,21 @@ function Hobbies() {
     useEffect(() => {
         fetchData()
     }, [])
+
+    const addHobby = async (e) => {
+        e.preventDefault()
+        try {
+            await axios.post('http://127.0.0.1:8000/api/hobby', {
+                hobby: newHobby
+            })
+
+            setNewHobby("")
+            setShowModalAdd(false)
+            fetchData()
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     const deleteHobby = async (id) => {
         try {
@@ -42,6 +59,9 @@ function Hobbies() {
 
                 <div className="mb-4">
                     <button
+                        onClick={() => {
+                            setShowModalAdd(true)
+                        }}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
                         Add Hobi
@@ -104,7 +124,7 @@ function Hobbies() {
             {
                 showModal && (
                     <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded shadow-lg w-96">
+                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
                             <h2 className="text-lg font-bold mb-4">Konfirmasi Hapus</h2>
                             <p className="mb-6">Yakin ingin menghapus data ini?</p>
 
@@ -129,6 +149,47 @@ function Hobbies() {
                         </div>
                     </div>
                 )
+            }
+
+            {/* modal tambah */}
+            {
+                showModalAdd && (
+
+                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+                            <h2 className="text-lg font-bold mb-4">Tambah Hobi</h2>
+
+                            <form onSubmit={addHobby} className="space-y-4">
+                                <input
+                                    type="text"
+                                    value={newHobby}
+                                    onChange={(e) => setNewHobby(e.target.value)}
+                                    placeholder="Masukkan nama hobi"
+                                    className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none"
+                                    required
+                                />
+
+                                <div className="flex justify-end gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowModalAdd(false)}
+                                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                                    >
+                                        Batal
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                    >
+                                        Tambah
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )
+
             }
 
         </div >
