@@ -5,11 +5,15 @@ import { useEffect, useState } from "react"
 function Hobbies() {
     const [hobbies, setHobbies] = useState([])
     const [newHobby, setNewHobby] = useState("")
+    const [editHobby, setEditHobby] = useState("")
+    const [editId, setEditId] = useState(null)
+    const [hobbyId, setHobbyId] = useState(null)
 
     // const modal 
     const [showModal, setShowModal] = useState(false)
-    const [hobbyId, setHobbyId] = useState(null)
     const [showModalAdd, setShowModalAdd] = useState(false)
+    const [showModalEdit, setShowModalEdit] = useState(false)
+
 
 
     const fetchData = () => {
@@ -36,6 +40,22 @@ function Hobbies() {
 
             setNewHobby("")
             setShowModalAdd(false)
+            fetchData()
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const updateHobby = async (e) => {
+        e.preventDefault()
+        try {
+            await axios.put(`http://127.0.0.1:8000/api/hobby/${editId}`, {
+                hobby: editHobby
+            })
+
+            setShowModalEdit(false)
+            setEditHobby("")
+            setEditId(null)
             fetchData()
         } catch (err) {
             console.log(err)
@@ -93,7 +113,11 @@ function Hobbies() {
                             </td>
                             <td className="py-2 px-4 border-b text-center">
                                 <button
-                                    // onClick={() => editHobby(item.id)}
+                                    onClick={() => {
+                                        setEditId(item.id)
+                                        setEditHobby(item.hobby)
+                                        setShowModalEdit(true)
+                                    }}
                                     className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
                                 >
                                     Edit
@@ -183,6 +207,47 @@ function Hobbies() {
                                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
                                     >
                                         Tambah
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )
+
+            }
+
+            {/* modal edit */}
+            {
+                showModalEdit && (
+
+                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+                            <h2 className="text-lg font-bold mb-4">Edit Hobi</h2>
+
+                            <form onSubmit={updateHobby} className="space-y-4">
+                                <input
+                                    type="text"
+                                    value={editHobby}
+                                    onChange={(e) => setEditHobby(e.target.value)}
+                                    placeholder="Masukkan nama hobi"
+                                    className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none"
+                                    required
+                                />
+
+                                <div className="flex justify-end gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowModalEdit(false)}
+                                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                                    >
+                                        Batal
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                    >
+                                        Edit
                                     </button>
                                 </div>
                             </form>
