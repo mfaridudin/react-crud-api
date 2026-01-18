@@ -14,6 +14,14 @@ function Hobbies() {
     const [showModalAdd, setShowModalAdd] = useState(false)
     const [showModalEdit, setShowModalEdit] = useState(false)
 
+    // alert
+    const [alert, setAlert] = useState({
+        show: false,
+        message: "",
+        type: ""
+    })
+
+
 
 
     const fetchData = () => {
@@ -41,6 +49,17 @@ function Hobbies() {
             setNewHobby("")
             setShowModalAdd(false)
             fetchData()
+
+            setAlert({
+                show: true,
+                message: "Hobi berhasil ditambahkan",
+                type: "success"
+            })
+
+            setTimeout(() => {
+                setAlert({ show: false, message: "", type: "" })
+            }, 3000)
+
         } catch (err) {
             console.log(err)
         }
@@ -57,6 +76,16 @@ function Hobbies() {
             setEditHobby("")
             setEditId(null)
             fetchData()
+
+            setAlert({
+                show: true,
+                message: "Hobi berhasil diupdate",
+                type: "success"
+            })
+
+            setTimeout(() => {
+                setAlert({ show: false, message: "", type: "" })
+            }, 3000)
         } catch (err) {
             console.log(err)
         }
@@ -66,6 +95,17 @@ function Hobbies() {
         try {
             await axios.delete(`http://127.0.0.1:8000/api/hobby/${id}`)
             fetchData()
+
+
+            setAlert({
+                show: true,
+                message: "Hobi berhasil dihapus",
+                type: "success"
+            })
+
+            setTimeout(() => {
+                setAlert({ show: false, message: "", type: "" })
+            }, 3000)
         } catch (err) {
             console.log(err)
         }
@@ -73,6 +113,16 @@ function Hobbies() {
 
     return (
         <div className="mx-auto box-border max-w-4xl p-4">
+
+            {alert.show && (
+                <div
+                    className={`mb-4 px-4 py-3 rounded 
+                    ${alert.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                >
+                    {alert.message}
+                </div>
+            )}
+
 
             <div className="flex items-center justify-between pt-24">
                 <h1 className="text-2xl font-bold mb-4">Tabel Hobi</h1>
