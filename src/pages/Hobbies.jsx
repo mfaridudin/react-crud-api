@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import Cookies from "js-cookie"
 
 
 function Hobbies() {
@@ -17,6 +18,7 @@ function Hobbies() {
     const [showModal, setShowModal] = useState(false)
     const [showModalAdd, setShowModalAdd] = useState(false)
     const [showModalEdit, setShowModalEdit] = useState(false)
+    const [showModalLogout, setShowModalLogout] = useState(false)
 
     // alert
     const [alert, setAlert] = useState({
@@ -37,7 +39,7 @@ function Hobbies() {
     }
 
     useEffect(() => {
-        if (!localStorage.getItem("token")){
+        if (!Cookies.get("token")) {
             Navigate("/login")
         }
 
@@ -114,6 +116,11 @@ function Hobbies() {
         } catch (err) {
             console.log(err)
         }
+    }
+
+    const logout = () => {
+        Cookies.remove("token");
+        navigate("/login");
     }
 
     return (
@@ -198,6 +205,8 @@ function Hobbies() {
                 </tbody>
             </table>
 
+            <button className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowModalLogout(true)}>Logout</button>
+
 
             {/* modal hapus */}
             {
@@ -268,7 +277,6 @@ function Hobbies() {
                         </div>
                     </div>
                 )
-
             }
 
             {/* modal edit */}
@@ -309,7 +317,39 @@ function Hobbies() {
                         </div>
                     </div>
                 )
+            }
 
+            {/* modal logout */}
+            {
+                showModalLogout && (
+                    <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+                            <h2 className="text-lg font-bold mb-4">Konfirmasi Logout</h2>
+                            <p className="mb-6">Yakin ingin Logout dari akun ini?</p>
+
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setShowModalLogout(false)}
+                                    className="bg-gray-300 px-4 py-2 rounded"
+                                >
+                                    Batal
+                                </button>
+
+                                <form onSubmit={logout}>
+                                    <button
+                                        onClick={() => {
+                                            logout()
+                                            setShowModal(false)
+                                        }}
+                                        className="bg-red-600 text-white px-4 py-2 rounded"
+                                    >
+                                        Ya, Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )
             }
 
         </div >

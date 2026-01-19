@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import Cookies from 'js-cookie';
 
 function Login() {
     const navigate = useNavigate()
@@ -11,7 +12,7 @@ function Login() {
 
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        if (Cookies.get('token')) {
             navigate("/")
         }
     }, [navigate])
@@ -30,7 +31,15 @@ function Login() {
             )
             console.log(response)
 
-            localStorage.setItem('token', response.data.token)
+            const token = response.data.token
+
+            Cookies.set('token', token, {
+                expires: 7,
+                secure: false,  
+                sameSite: 'lax',
+                path: '/'
+            });
+
             navigate("/");
         } catch (error) {
             if (error.response) {

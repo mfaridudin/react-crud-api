@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import Cookies from "js-cookie";
 
 function Register() {
 
@@ -14,7 +15,7 @@ function Register() {
   const [validation, setValidation] = useState([])
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    if (Cookies.getItem('token')) {
       navigate("/")
     }
   }, [])

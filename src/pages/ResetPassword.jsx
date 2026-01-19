@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import axios from "axios"
+import Cookies from "js-cookie"
 
 function ResetPassword() {
 
@@ -18,7 +19,7 @@ function ResetPassword() {
 
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        if (Cookies.getItem('token')) {
             navigate("/")
         }
 
