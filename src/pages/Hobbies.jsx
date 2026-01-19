@@ -1,8 +1,12 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 
 function Hobbies() {
+
+    const Navigate = useNavigate()
+
     const [hobbies, setHobbies] = useState([])
     const [newHobby, setNewHobby] = useState("")
     const [editHobby, setEditHobby] = useState("")
@@ -21,9 +25,6 @@ function Hobbies() {
         type: ""
     })
 
-
-
-
     const fetchData = () => {
         axios.get('http://127.0.0.1:8000/api/hobby')
             .then(res => {
@@ -36,6 +37,10 @@ function Hobbies() {
     }
 
     useEffect(() => {
+        if (!localStorage.getItem("token")){
+            Navigate("/login")
+        }
+
         fetchData()
     }, [])
 

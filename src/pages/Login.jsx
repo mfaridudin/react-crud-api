@@ -1,6 +1,53 @@
-import { Link } from "react-router-dom"
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
 function Login() {
+    const navigate = useNavigate()
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [validation, setValidation] = useState([]);
+
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate("/")
+        }
+    }, [navigate])
+
+    const login = async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData()
+        formData.append("email", email)
+        formData.append("password", password)
+
+        try {
+
+            const response = await axios.post('http://127.0.0.1:8000/api/login',
+                formData
+            )
+            console.log(response)
+
+            localStorage.setItem('token', response.data.token)
+            navigate("/");
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 422) {
+                    setValidation(error.response.data.errors)
+                }
+
+                if (error.response.status === 401) {
+                    setValidation({
+                        message: error.response.data.message
+                    })
+                }
+            }
+        }
+    }
+
+
     return (
         <>
             <div className="bg-gray-5">
@@ -10,17 +57,36 @@ function Login() {
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                                 Sign in an account
                             </h1>
-                            <form className="space-y-4 md:space-y-6" action="#">
+
+                            <div className="flex items-center justify-center">
+                                {validation?.message && (
+                                    <span className="text-red-500 text-sm">
+                                        {validation.message}
+                                    </span>
+                                )}
+                            </div>
+
+                            <form className="space-y-4 md:space-y-6" onSubmit={login}>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your email</label>
-                                    <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required="" />
+                                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required="" />
+                                    {validation.email && (
+                                        <span className="text-red-500 text-sm text-center items-center">
+                                            {validation.email}
+                                        </span>
+                                    )}
                                 </div>
 
                                 <div>
                                     <div>
                                         <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                                        <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
+                                        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
                                     </div>
+                                    {validation.password && (
+                                        <span className="text-red-500 text-sm text-center items-center">
+                                            {validation.password}
+                                        </span>
+                                    )}
                                     <div className="pt-1.5">
                                         <a href="#" className="font-medium text-sm text-blue-600 hover:underline">Forgot password</a>
                                     </div>
