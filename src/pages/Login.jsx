@@ -88,7 +88,7 @@ function Login() {
                                         </span>
                                     )}
                                     <div className="pt-1.5">
-                                        <a href="#" className="font-medium text-sm text-blue-600 hover:underline">Forgot password</a>
+                                        <Link to="/forgot-password" className="font-medium text-sm text-blue-600 hover:underline">Forgot password</Link>
                                     </div>
                                 </div>
 
