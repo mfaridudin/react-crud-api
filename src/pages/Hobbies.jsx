@@ -2,9 +2,15 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
+import { Button } from "../components/Button"
+import { Modal } from "../components/Modal"
+import { ModalForm } from "../components/ModalForm"
 
 
 function Hobbies() {
+
+    // link api
+    const baseApiUrl = import.meta.env.VITE_API_BASE_URL
 
     const Navigate = useNavigate()
 
@@ -28,7 +34,7 @@ function Hobbies() {
     })
 
     const fetchData = () => {
-        axios.get('http://127.0.0.1:8000/api/hobby')
+        axios.get(`${baseApiUrl}/hobby`)
             .then(res => {
                 console.log(res.data.data)
                 setHobbies(res.data.data)
@@ -43,13 +49,15 @@ function Hobbies() {
             Navigate("/login")
         }
 
+        // console.log(baseApiUrl)
+
         fetchData()
     }, [])
 
     const addHobby = async (e) => {
         e.preventDefault()
         try {
-            await axios.post('http://127.0.0.1:8000/api/hobby', {
+            await axios.post(`${baseApiUrl}/hobby`, {
                 hobby: newHobby
             })
 
@@ -75,7 +83,7 @@ function Hobbies() {
     const updateHobby = async (e) => {
         e.preventDefault()
         try {
-            await axios.put(`http://127.0.0.1:8000/api/hobby/${editId}`, {
+            await axios.put(`${baseApiUrl}/hobby/${editId}`, {
                 hobby: editHobby
             })
 
@@ -100,7 +108,7 @@ function Hobbies() {
 
     const deleteHobby = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/hobby/${id}`)
+            await axios.delete(`${baseApiUrl}/hobby/${id}`)
             fetchData()
 
 
@@ -140,14 +148,11 @@ function Hobbies() {
                 <h1 className="text-2xl font-bold mb-4">Tabel Hobi</h1>
 
                 <div className="mb-4">
-                    <button
-                        onClick={() => {
-                            setShowModalAdd(true)
-                        }}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                        Add Hobi
-                    </button>
+                    <Button onClick={() => {
+                        setShowModalAdd(true)
+                    }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        {"Add Hobi"}
+                    </Button>
                 </div>
             </div>
 
@@ -174,25 +179,20 @@ function Hobbies() {
                                 })}
                             </td>
                             <td className="py-2 px-4 border-b text-center">
-                                <button
-                                    onClick={() => {
-                                        setEditId(item.id)
-                                        setEditHobby(item.hobby)
-                                        setShowModalEdit(true)
-                                    }}
-                                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setHobbyId(item.id)
-                                        setShowModal(true)
-                                    }}
-                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                                >
-                                    Hapus
-                                </button>
+                                <Button onClick={() => {
+                                    setEditId(item.id)
+                                    setEditHobby(item.hobby)
+                                    setShowModalEdit(true)
+                                }} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2">
+                                    {"Edit"}
+                                </Button>
+
+                                <Button onClick={() => {
+                                    setHobbyId(item.id)
+                                    setShowModal(true)
+                                }} className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                                    {"Hapus"}
+                                </Button>
                             </td>
                         </tr>
                     ))}
@@ -205,152 +205,81 @@ function Hobbies() {
                 </tbody>
             </table>
 
-            <button className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowModalLogout(true)}>Logout</button>
-
+            <Button className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowModalLogout(true)}>{"Logout"}</Button>
 
             {/* modal hapus */}
-            {
-                showModal && (
-                    <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
-                            <h2 className="text-lg font-bold mb-4">Konfirmasi Hapus</h2>
-                            <p className="mb-6">Yakin ingin menghapus data ini?</p>
-
-                            <div className="flex justify-end gap-2">
-                                <button
-                                    onClick={() => setShowModal(false)}
-                                    className="bg-gray-300 px-4 py-2 rounded"
-                                >
-                                    Batal
-                                </button>
-
-                                <button
-                                    onClick={async () => {
-                                        await deleteHobby(hobbyId)
-                                        setShowModal(false)
-                                    }}
-                                    className="bg-red-600 text-white px-4 py-2 rounded"
-                                >
-                                    Ya, Hapus
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title="Konfirmasi Hapus"
+            >
+                <p className="mb-6">Yakin ingin menghapus data ini?</p>
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => setShowModal(false)}
+                        className="bg-gray-300 px-4 py-2 rounded"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        onClick={async () => {
+                            await deleteHobby(hobbyId)
+                            setShowModal(false)
+                        }}
+                        className="bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Ya, Hapus
+                    </button>
+                </div>
+            </Modal>
 
             {/* modal tambah */}
-            {
-                showModalAdd && (
-
-                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
-                            <h2 className="text-lg font-bold mb-4">Tambah Hobi</h2>
-
-                            <form onSubmit={addHobby} className="space-y-4">
-                                <input
-                                    type="text"
-                                    value={newHobby}
-                                    onChange={(e) => setNewHobby(e.target.value)}
-                                    placeholder="Masukkan nama hobi"
-                                    className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none"
-                                    required
-                                />
-
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowModalAdd(false)}
-                                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
-                                    >
-                                        Batal
-                                    </button>
-
-                                    <button
-                                        type="submit"
-                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                                    >
-                                        Tambah
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )
-            }
+            <ModalForm
+                show={showModalAdd}
+                onClose={() => setShowModalAdd(false)}
+                title="Tambah Hobi"
+                value={newHobby}
+                onChange={setNewHobby}
+                onSubmit={addHobby}
+                submitLabel="Tambah"
+            />
 
             {/* modal edit */}
-            {
-                showModalEdit && (
-
-                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
-                            <h2 className="text-lg font-bold mb-4">Edit Hobi</h2>
-
-                            <form onSubmit={updateHobby} className="space-y-4">
-                                <input
-                                    type="text"
-                                    value={editHobby}
-                                    onChange={(e) => setEditHobby(e.target.value)}
-                                    placeholder="Masukkan nama hobi"
-                                    className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none"
-                                    required
-                                />
-
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowModalEdit(false)}
-                                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
-                                    >
-                                        Batal
-                                    </button>
-
-                                    <button
-                                        type="submit"
-                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                                    >
-                                        Edit
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )
-            }
+            <ModalForm
+                show={showModalEdit}
+                onClose={() => setShowModalEdit(false)}
+                title="Edit Hobi"
+                value={editHobby}
+                onChange={setEditHobby}
+                onSubmit={updateHobby}
+                submitLabel="Edit"
+            />
 
             {/* modal logout */}
-            {
-                showModalLogout && (
-                    <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-xl shadow-lg w-96">
-                            <h2 className="text-lg font-bold mb-4">Konfirmasi Logout</h2>
-                            <p className="mb-6">Yakin ingin Logout dari akun ini?</p>
-
-                            <div className="flex justify-end gap-2">
-                                <button
-                                    onClick={() => setShowModalLogout(false)}
-                                    className="bg-gray-300 px-4 py-2 rounded"
-                                >
-                                    Batal
-                                </button>
-
-                                <form onSubmit={logout}>
-                                    <button
-                                        onClick={() => {
-                                            logout()
-                                            setShowModal(false)
-                                        }}
-                                        className="bg-red-600 text-white px-4 py-2 rounded"
-                                    >
-                                        Ya, Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
+            <Modal
+                show={showModalLogout}
+                onClose={() => setShowModalLogout(false)}
+                title="Konfirmasi Logout"
+            >
+                <p className="mb-6">Yakin ingin Logout dari akun ini?</p>
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => setShowModalLogout(false)}
+                        className="bg-gray-300 px-4 py-2 rounded"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        onClick={() => {
+                            logout()
+                            setShowModalLogout(false)
+                        }}
+                        className="bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Ya, Logout
+                    </button>
+                </div>
+            </Modal>
 
         </div >
     )

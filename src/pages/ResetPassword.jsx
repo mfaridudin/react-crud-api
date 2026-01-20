@@ -2,8 +2,13 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import axios from "axios"
 import Cookies from "js-cookie"
+import { Button } from "../components/Button"
+import { Input } from "../components/Input"
 
 function ResetPassword() {
+
+    // link api
+    const baseApiUrl = import.meta.env.VITE_API_BASE_URL
 
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -33,7 +38,7 @@ function ResetPassword() {
 
         try {
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/reset-password",
+                `${baseApiUrl}/reset-password`,
                 {
                     token,
                     email,
@@ -57,7 +62,7 @@ function ResetPassword() {
     return (
         <>
             <div className="bg-gray-5">
-                <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+                <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto    CPU: AMD Ryzen 5 7520U with Radeon Graphics (8) @ 4.386GHz md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
@@ -66,7 +71,7 @@ function ResetPassword() {
                             <form className="space-y-4 md:space-y-6" onSubmit={resetPassword}>
                                 <div>
                                     <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">New Password</label>
-                                    <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
+                                    <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
                                     {
                                         validation.password && (
                                             <span className="text-red-500 text-sm">{validation.password[0]}</span>
@@ -75,7 +80,7 @@ function ResetPassword() {
                                 </div>
                                 <div>
                                     <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900">Confirm new password</label>
-                                    <input value={password_confirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
+                                    <Input value={password_confirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
                                     {
                                         validation.password_confirmation && (
                                             <span className="text-red-500 text-sm">{validation.password_confirmation[0]}</span>
@@ -83,7 +88,7 @@ function ResetPassword() {
                                     }
                                 </div>
 
-                                <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Reset Password</button>
+                                <Button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">{"Reset Password"}</Button>
                             </form>
                         </div>
                     </div>

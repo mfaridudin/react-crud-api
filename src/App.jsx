@@ -5,6 +5,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import GoogleCallback from './pages/GoogleCallback'
 
 function App() {
 
@@ -16,6 +17,8 @@ function App() {
         <Route path='/login' element={<Login />}></Route>
         <Route path='/forgot-password' element={<ForgotPassword />}></Route>
         <Route path='/reset-password/:token' element={<ResetPassword />}></Route>
+        <Route path="/google-callback" element={<GoogleCallback />}></Route>
+
       </Routes>
     </>
   )

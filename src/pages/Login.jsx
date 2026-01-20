@@ -2,8 +2,15 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Cookies from 'js-cookie';
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 function Login() {
+
+    // link api
+    const baseApiUrl = import.meta.env.VITE_API_BASE_URL
+    const googleLogin = import.meta.env.VITE_GOOGLE_LOGIN_URL
+
     const navigate = useNavigate()
 
     const [email, setEmail] = useState("")
@@ -26,7 +33,7 @@ function Login() {
 
         try {
 
-            const response = await axios.post('http://127.0.0.1:8000/api/login',
+            const response = await axios.post(`${baseApiUrl}/login`,
                 formData
             )
             console.log(response)
@@ -35,7 +42,7 @@ function Login() {
 
             Cookies.set('token', token, {
                 expires: 7,
-                secure: false,  
+                secure: false,
                 sameSite: 'lax',
                 path: '/'
             });
@@ -56,6 +63,9 @@ function Login() {
         }
     }
 
+    const loginWithGoogle = () => {
+        window.location.href = `${googleLogin}`
+    }
 
     return (
         <>
@@ -78,7 +88,7 @@ function Login() {
                             <form className="space-y-4 md:space-y-6" onSubmit={login}>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your email</label>
-                                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required="" />
+                                    <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required="" />
                                     {validation.email && (
                                         <span className="text-red-500 text-sm text-center items-center">
                                             {validation.email}
@@ -89,7 +99,7 @@ function Login() {
                                 <div>
                                     <div>
                                         <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                                        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
+                                        <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
                                     </div>
                                     {validation.password && (
                                         <span className="text-red-500 text-sm text-center items-center">
@@ -101,8 +111,7 @@ function Login() {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Sign in an account</button>
-
+                                <Button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">{"Sign in an account"}</Button>
 
                             </form>
 
@@ -115,10 +124,10 @@ function Login() {
                                 </div>
                             </div>
 
-                            <button className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                            <Button onClick={loginWithGoogle} className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-md hover:bg-gray-50 transition">
                                 <img src="//www.gstatic.com/images/branding/searchlogo/ico/favicon.ico" alt="Google" className="w-5 h-5" />
                                 <span className="font-medium text-gray-700">Sign in with Google</span>
-                            </button>
+                            </Button>
 
                             <p className="text-sm font-light text-gray-500">
                                 Don't have an account yet? <Link to="/register" className="font-medium text-blue-600 hover:underline">Register here</Link>

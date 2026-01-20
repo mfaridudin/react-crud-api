@@ -2,8 +2,13 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Cookies from "js-cookie";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 function Register() {
+
+  // link api
+  const baseApiUrl = import.meta.env.VITE_API_BASE_URL
 
   const navigate = useNavigate();
 
@@ -15,7 +20,7 @@ function Register() {
   const [validation, setValidation] = useState([])
 
   useEffect(() => {
-    if (Cookies.getItem('token')) {
+    if (Cookies.get('token')) {
       navigate("/")
     }
   }, [])
@@ -33,7 +38,7 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/register", formData
+        `${baseApiUrl}/register`, formData
       )
       console.log(response)
 
@@ -43,7 +48,6 @@ function Register() {
       setValidation(error.response.data.errors)
     }
   }
-
 
   return (
     <>
@@ -57,7 +61,7 @@ function Register() {
               <form className="space-y-4 md:space-y-6" onSubmit={register}>
                 <div>
                   <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Your name</label>
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="your name" required="" />
+                  <Input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="your name" required="" ></Input>
                   {
                     validation.name && (
                       <span className="text-red-500 text-sm">{validation.name[0]}</span>
@@ -66,7 +70,7 @@ function Register() {
                 </div>
                 <div>
                   <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your email</label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required="" />
+                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required="" />
                   {
                     validation.name && (
                       <span className="text-red-500 text-sm">{validation.email[0]}</span>
@@ -75,7 +79,7 @@ function Register() {
                 </div>
                 <div>
                   <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
+                  <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
                   {
                     validation.password && (
                       <span className="text-red-500 text-sm">{validation.password[0]}</span>
@@ -84,7 +88,7 @@ function Register() {
                 </div>
                 <div>
                   <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900">Confirm password</label>
-                  <input type="password" value={password_confirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
+                  <Input type="password" value={password_confirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required="" />
                   {
                     validation.password_confirmation && (
                       <span className="text-red-500 text-sm">{validation.password_confirmation[0]}</span>
@@ -92,7 +96,7 @@ function Register() {
                   }
                 </div>
 
-                <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create an account</button>
+                <Button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">{"Create an account"}</Button>
                 <p className="text-sm font-light text-gray-500">
                   Already have an account? <Link to="/login" className="font-medium text-blue-600 hover:underline">Login here</Link>
                 </p>
