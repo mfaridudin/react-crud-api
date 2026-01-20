@@ -2,7 +2,8 @@ export const Modal = ({
     show,
     onClose,
     title,
-    children }) => {
+    children
+}) => {
     if (!show) return null;
 
     return (

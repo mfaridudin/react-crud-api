@@ -1,3 +1,6 @@
+import { Input } from "./Input";
+import { Button } from "./Button";
+
 export const ModalForm = ({
     show,
     onClose,
@@ -15,7 +18,7 @@ export const ModalForm = ({
                 {title && <h2 className="text-lg font-bold mb-4">{title}</h2>}
 
                 <form onSubmit={onSubmit} className="space-y-4">
-                    <input
+                    <Input
                         type="text"
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
@@ -25,20 +28,20 @@ export const ModalForm = ({
                     />
 
                     <div className="flex justify-end gap-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={onClose}
                             className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
                         >
-                            Batal
-                        </button>
+                            {"Batal"}
+                        </Button>
 
-                        <button
+                        <Button
                             type="submit"
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
                         >
                             {submitLabel}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>
