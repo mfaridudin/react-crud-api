@@ -128,7 +128,7 @@ function Hobbies() {
 
     const logout = () => {
         Cookies.remove("token");
-        navigate("/login");
+        Navigate("/login");
     }
 
     return (
